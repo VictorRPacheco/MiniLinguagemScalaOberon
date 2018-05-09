@@ -29,5 +29,4 @@ class TestDifExpression extends FlatSpec with Matchers with GivenWhenThen with B
     eq.eval() should be (BoolValue(true))
   }
 
-
 }
