@@ -8,7 +8,7 @@ import org.scalatest.BeforeAndAfter
 
 class TestBiggerEqExpression extends FlatSpec with Matchers with GivenWhenThen with BeforeAndAfter {
 
-  behavior of "an BiggerEqEq expressions"
+  behavior of "an BiggerEq expressions"
 
   it should "return value true in BiggerEq(IntValue(20), IntValue(10))" in {
     val val20  = IntValue(20)
