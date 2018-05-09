@@ -21,24 +21,24 @@ class TestMultExpression extends FlatSpec with Matchers with GivenWhenThen with 
   it should "return value 50 in Mult(IntValue(5), IntValue(10))" in {
     val val5  = IntValue(5)
     val val10 = IntValue(10)
-    val add   = new MultExpression(val5, val10)
+    val res   = new MultExpression(val5, val10)
 
-    add.eval() should be (IntValue(50))
+    res.eval() should be (IntValue(50))
   }
 
   it should "return value -50 in Mult(IntValue(-5), IntValue(10))" in {
     val val5  = IntValue(-5)
     val val10 = IntValue(10)
-    val add   = new MultExpression(val5, val10)
+    val res   = new MultExpression(val5, val10)
 
-    add.eval() should be (IntValue(-50))
+    res.eval() should be (IntValue(-50))
   }
 
   it should "lead to an exception in Mult(IntValue(5), BoolValue(False))" in {
     val val5 = IntValue(5)
     val valf = BoolValue(false)
-    val add = new MultExpression(val5, valf)
+    val res = new MultExpression(val5, valf)
 
-    // Mult.eval() should be (IntValue(5))
+    // res.eval() should be (IntValue(5))
   }
 }

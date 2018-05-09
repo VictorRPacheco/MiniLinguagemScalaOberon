@@ -13,39 +13,39 @@ class TestBiggerEqExpression extends FlatSpec with Matchers with GivenWhenThen w
   it should "return value true in BiggerEq(IntValue(20), IntValue(10))" in {
     val val20  = IntValue(20)
     val val10 = IntValue(10)
-    val add   = new BiggerEqExpression(val20, val10)
+    val res   = new BiggerEqExpression(val20, val10)
 
-    add.eval() should be (BoolValue(true))
+    res.eval() should be (BoolValue(true))
   }
 
   it should "return value false in BiggerEq(IntValue(10), IntValue(20))" in {
     val val10  = IntValue(10)
     val val20 = IntValue(20)
-    val add   = new BiggerEqExpression(val10, val20)
+    val res   = new BiggerEqExpression(val10, val20)
 
-    add.eval() should be (BoolValue(false))
+    res.eval() should be (BoolValue(false))
   }
 
   it should "return value true in Divide(IntValue(10), IntValue(10))" in {
     val val10 = IntValue(10)
-    val add   = new BiggerEqExpression(val10, val10)
+    val res   = new BiggerEqExpression(val10, val10)
 
-    add.eval() should be (BoolValue(true))
+    res.eval() should be (BoolValue(true))
   }
 
   it should "return value true in BiggerEq(IntValue(10), IntValue(-20))" in {
     val val10  = IntValue(10)
     val val20 = IntValue(-20)
-    val add   = new BiggerEqExpression(val10, val20)
+    val res   = new BiggerEqExpression(val10, val20)
 
-    add.eval() should be (BoolValue(true))
+    res.eval() should be (BoolValue(true))
   }
 
   it should "lead to an exception in BiggerEq(IntValue(5), BoolValue(False))" in {
     val val5 = IntValue(5)
     val valf = BoolValue(false)
-    val add = new BiggerEqExpression(val5, valf)
+    val res = new BiggerEqExpression(val5, valf)
 
-    // Mult.eval() should be (IntValue(5))
+    // res.eval() should be (IntValue(5))
   }
 }

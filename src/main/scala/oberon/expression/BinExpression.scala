@@ -123,10 +123,19 @@ class AndExpression(lhs: Expression, rhs: Expression) extends BinExpression(lhs,
     val v1 : BoolValue = lhs.eval().asInstanceOf[BoolValue]
     val v2 : BoolValue = rhs.eval().asInstanceOf[BoolValue]
 
-    return v1 && v2
+    if((v1 == BoolValue(false)) || (v2 == BoolValue(false))) return BoolValue(false)
+    else return BoolValue(true)
   }
 }
 
-/*
- not, or)
- */
+class OrExpression(lhs: Expression, rhs: Expression) extends BinExpression(lhs, rhs) {
+
+  override
+  def eval: Value = {
+    val v1 : BoolValue = lhs.eval().asInstanceOf[BoolValue]
+    val v2 : BoolValue = rhs.eval().asInstanceOf[BoolValue]
+
+    if((v1 == BoolValue(false)) && (v2 == BoolValue(false))) return BoolValue(false)
+    else return BoolValue(true)
+  }
+}
