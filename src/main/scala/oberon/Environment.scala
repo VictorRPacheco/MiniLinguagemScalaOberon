@@ -27,5 +27,7 @@ object Environment {
 
   def lookup(id: String) : Option[Value] =
     if(stack.isEmpty) None else Some(stack.top(id))
-  
+
+  def clear() : Unit = { stack.clear() }
+
 }

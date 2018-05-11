@@ -8,5 +8,6 @@ trait Value extends Expression {
   def eval() = this
 }
 
+case class Undefined() extends Value
 case class IntValue(value: Integer) extends Value
 case class BoolValue(value: Boolean) extends Value

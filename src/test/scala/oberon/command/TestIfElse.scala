@@ -8,13 +8,22 @@ import org.scalatest.BeforeAndAfter
 import oberon.Environment._
 import oberon.expression.IntValue
 import oberon.expression.DifExpression
-import oberon.command.IfElse
 
 class TestIfThenElse extends FlatSpec with Matchers with GivenWhenThen with BeforeAndAfter {
 
   behavior of "an if-then-else command"
+  before {
+    clear()
+  }
 
-  it should "the environment must have a y = 5, if (10 != 10): y = 7 else: y = 0" in {
+  // y := 5;
+  // if (10 != 10) {
+  //   y := 7
+  // else {
+  //   y := 0
+  // }
+  // end
+  it should "lookup(y) should be equal to 0 after entering else instead of if" in {
     var initial_assignment = new Assignment("y", IntValue(5))
     initial_assignment.run()
 
