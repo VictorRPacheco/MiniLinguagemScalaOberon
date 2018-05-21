@@ -51,6 +51,20 @@ class IfThen(val cond: Expression, val command: Command) extends Command {
 }
 
 
+class For(val initCommand: Command, val cond: Expression, val lastCommand: Command, val command: Command) extends Command {
+  override
+  def run() : Unit = {
+      initCommand.run()
+      val v = cond.eval.asInstanceOf[BoolValue]
+      v match {
+        case BoolValue(true) => { command.run(); lastCommand.run(); this.run(); }
+        case _               => { }
+      }
+
+  }
+
+}
+
 class While(val cond: Expression, val command: Command) extends Command {
   override
   def run() : Unit = {
