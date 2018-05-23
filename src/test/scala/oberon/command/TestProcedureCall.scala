@@ -1,28 +1,29 @@
-package oberon.callable
+package oberon.command
 
 import org.scalatest.FlatSpec
 import org.scalatest.Matchers
 import org.scalatest.GivenWhenThen
 import org.scalatest.BeforeAndAfter
 import oberon.Environment._
-import oberon.command.{Assignment, BlockCommand, While}
-import oberon.expression.{AddExpression, IntValue, SmallerEqExpression, VarRef}
+import oberon.callable._
+import oberon.expression.{AddExpression, IntValue, VarRef}
 
-class TestDeclareProcedure extends FlatSpec with Matchers with GivenWhenThen with BeforeAndAfter {
-
-  behavior of "a procedure declaration"
+class TestProcedureCall extends FlatSpec with Matchers with GivenWhenThen with BeforeAndAfter {
 
   before {
     clear()
     clearExecutionStack()
   }
 
+  behavior of "a procedure call"
+
+
   // procedure sumPlus5 (x, y: int, z: int) {
   //    soma = x + y
   //    soma = soma + 5
   //    z = soma
   // }
-  it should "lookup should return the function declaration" in {
+  it should "lookup should return value 10" in {
 
     val x = new Assignment("x", IntValue(1))
     val y = new Assignment("y", IntValue(4))
@@ -40,12 +41,20 @@ class TestDeclareProcedure extends FlatSpec with Matchers with GivenWhenThen wit
     val zRef = new VarRef("z")
 
     val blockCmds = new BlockCommand(List(somaXY, soma5, retorno))
+    // sumPlus5(1, 4, z)
     var procedure = new Procedure("sumPlus5", List(xRef, yRef), zRef, blockCmds)
     mapTable("sumPlus5", procedure)
 
-    val res = lookupTable("sumPlus5")
+    val p = lookupTable("sumPlus5")
+    print(p)
+
+    val p1 = new ProdedureCallCommand(p.getOrElse(0).asInstanceOf[Procedure])
+
+    p1.run()
+
+    val res = lookup("z")
     res match {
-      case Some(p) => p should be (procedure)
+      case Some(v) => v should be (IntValue(10))
       case _       => print("Error")
     }
 

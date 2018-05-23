@@ -2,14 +2,14 @@ package oberon.command
 
 import oberon.Environment._
 
-import oberon.expression.Expression
+import oberon.expression._
+import oberon.callable._
 import oberon.expression.BoolValue
 import scala.io.StdIn.{readInt,readBoolean}
 
 trait Command {
   def run() : Unit
 }
-
 
 class BlockCommand(val cmds: List[Command]) extends Command {
   override
@@ -101,6 +101,14 @@ class ReadInt() extends Command {
 class ReadBool() extends Command {
   override
   def run() : Unit = {
-    readBoolean()
+    //readBoolean()
+  }
+}
+
+class ProdedureCallCommand(val p: Procedure) extends Command {
+  override
+  def run() : Unit = {
+    p.args.foreach(e => e.eval())
+    p.cmds.run()
   }
 }

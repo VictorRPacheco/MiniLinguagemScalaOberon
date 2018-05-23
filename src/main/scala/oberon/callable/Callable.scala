@@ -3,33 +3,16 @@ package oberon.callable
 import oberon.Environment._
 import oberon.command
 import oberon.command.BlockCommand
-import oberon.expression.Value
+import oberon.expression.Expression
+import oberon.expression._
 
 /*
- * Definição de um procedure: procedure name(argument(s): type1, argument(s): type 2, ... )  {};
+ * Definição de um Callable: Procedure, Function, Variable
+ * Qualquer coisa que pode ser chamada ou referenciada
  */
 
-sealed trait ReturnType
+trait Callable
 
-final case class Unit() extends ReturnType
-final case class Value() extends ReturnType
+class Procedure(val id: String, val args: List[Expression], val ret: Expression, val cmds: BlockCommand) extends Callable
 
-trait Callable {
-  def call(): ReturnType
-}
-
-class Procedure(val id: String, val args: String, val ret: String, val cmds: BlockCommand) extends Callable {
-  override
-  def call() : ReturnType = {
-
-     _
-  }
-}
-
-class Function(val id: String, val args: String, val retType: String, val cmds: BlockCommand) extends Callable {
-  override
-  def call(): ReturnType = {
-
-    Value()
-  }
-}
+class Function(val id: String, val args: List[Expression], val retType: String, val cmds: BlockCommand) extends Callable

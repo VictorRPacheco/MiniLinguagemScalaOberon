@@ -7,11 +7,10 @@ import scala.collection.mutable.HashMap
 import oberon.expression.Value
 import oberon.expression.Expression
 import oberon.callable.Callable
-import oberon.function.Function
 
 object Environment {
   var stack = new Stack[Map[String, Value]] ()
-  var executionStack = new Stack[Map[String, Callable]]
+  var symbolsTable = new Stack[Map[String, Callable]]
 
   def push() {
     stack.push(new HashMap[String, Value]())
@@ -21,27 +20,27 @@ object Environment {
     stack.pop()
   }
 
-  def mapExecStack(id: String, procedure: Callable) = {
-    if(executionStack.isEmpty) {
-      executionStack.push(new HashMap[String, Callable]())
+  def mapTable(id: String, procedure: Callable) = {
+    if(symbolsTable.isEmpty) {
+      symbolsTable.push(new HashMap[String, Callable]())
     }
-    executionStack.top += (id -> procedure)
+    symbolsTable.top += (id -> procedure)
   }
 
   def map(id: String, value: Value) {
     if(stack.isEmpty) {
       push()
     }
-    stack.top += (id -> value) 
+    stack.top += (id -> value)
   }
 
   def lookup(id: String) : Option[Value] =
     if(stack.isEmpty) None else Some(stack.top(id))
 
-  def lookupExecStack(id: String) : Option[Callable] =
-    if(executionStack.isEmpty) None else Some(executionStack.top(id))
+  def lookupTable(id: String) : Option[Callable] =
+    if(symbolsTable.isEmpty) None else Some(symbolsTable.top(id))
 
   def clear() : Unit = { stack.clear() }
-  def clearExecutionStack() : Unit = { executionStack.clear() }
+  def clearExecutionStack() : Unit = { symbolsTable.clear() }
 
 }
