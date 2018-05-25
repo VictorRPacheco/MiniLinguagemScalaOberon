@@ -12,7 +12,9 @@ import oberon.expression.DifExpression
 class TestIfThen extends FlatSpec with Matchers with GivenWhenThen with BeforeAndAfter {
 
   before {
-    clear()
+    clearDeclarations()
+    clearExecutionStack()
+    clearSymbolsTable()
   }
 
   behavior of "an if-then command"

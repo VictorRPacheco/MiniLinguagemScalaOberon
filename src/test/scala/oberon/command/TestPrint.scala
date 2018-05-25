@@ -14,7 +14,9 @@ class TestPrint extends FlatSpec with Matchers with GivenWhenThen with BeforeAnd
   behavior of "a print command"
 
   before {
-    clear()
+    clearDeclarations()
+    clearExecutionStack()
+    clearSymbolsTable()
   }
 
   it should "the environment must have a print(5)" in {

@@ -3,44 +3,64 @@ package oberon
 import scala.collection.mutable.Stack
 import scala.collection.mutable.Map
 import scala.collection.mutable.HashMap
-
 import oberon.expression.Value
 import oberon.expression.Expression
-import oberon.callable.Callable
+import oberon.callable._
+import oberon.thread._
+
+import scala.collection.mutable
 
 object Environment {
-  var stack = new Stack[Map[String, Value]] ()
-  var symbolsTable = new Stack[Map[String, Callable]]
+  var symbolsTable = new Stack[Map[String, Value]] ()
+  var callableTable = new Stack[Map[String, Callable]] ()
+  var executionStack = new Stack[Map[String, Thread]] ()
 
   def push() {
-    stack.push(new HashMap[String, Value]())
+    symbolsTable.push(new HashMap[String, Value]())
+  }
+
+  def pushTable(){
+    callableTable.push(new HashMap[String, Callable]())
   }
 
   def pop() {
-    stack.pop()
-  }
-
-  def mapTable(id: String, procedure: Callable) = {
-    if(symbolsTable.isEmpty) {
-      symbolsTable.push(new HashMap[String, Callable]())
-    }
-    symbolsTable.top += (id -> procedure)
+    symbolsTable.pop()
   }
 
   def map(id: String, value: Value) {
-    if(stack.isEmpty) {
+    if(symbolsTable.isEmpty) {
       push()
     }
-    stack.top += (id -> value)
+    symbolsTable.top += (id -> value)
+  }
+
+  def mapExecutionStack(id: String, t: Thread) = {
+    if(executionStack.isEmpty) {
+      executionStack.push(new HashMap[String, Thread]())
+    }
+    executionStack.top += (id -> t)
   }
 
   def lookup(id: String) : Option[Value] =
-    if(stack.isEmpty) None else Some(stack.top(id))
-
-  def lookupTable(id: String) : Option[Callable] =
     if(symbolsTable.isEmpty) None else Some(symbolsTable.top(id))
 
-  def clear() : Unit = { stack.clear() }
-  def clearExecutionStack() : Unit = { symbolsTable.clear() }
+  def mapTable(id: String, c: Callable) = {
+    if(callableTable.isEmpty) {
+      callableTable.push(new HashMap[String, Callable]())
+    }
+    callableTable.top += (id -> c)
+
+    // declaring arguments in procedure/function
+    for (arg <- c.args) {
+      map(arg._1, arg._2.eval())
+    }
+  }
+
+  def lookupTable(id: String) : Option[Callable] =
+    if(callableTable.isEmpty) None else Some(callableTable.top(id))
+
+  def clearSymbolsTable() : Unit = { symbolsTable.clear() }
+  def clearDeclarations() : Unit = { callableTable.clear() }
+  def clearExecutionStack() : Unit = { executionStack.clear() }
 
 }

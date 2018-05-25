@@ -13,7 +13,9 @@ class TestIfThenElse extends FlatSpec with Matchers with GivenWhenThen with Befo
 
   behavior of "an if-then-else command"
   before {
-    clear()
+    clearDeclarations()
+    clearExecutionStack()
+    clearSymbolsTable()
   }
 
   // y := 5;

@@ -13,7 +13,8 @@ class TestDeclareProcedure extends FlatSpec with Matchers with GivenWhenThen wit
   behavior of "a procedure declaration"
 
   before {
-    clear()
+    clearSymbolsTable()
+    clearDeclarations()
     clearExecutionStack()
   }
 
@@ -24,29 +25,24 @@ class TestDeclareProcedure extends FlatSpec with Matchers with GivenWhenThen wit
   // }
   it should "lookup should return the function declaration" in {
 
-    val x = new Assignment("x", IntValue(1))
-    val y = new Assignment("y", IntValue(4))
-    val z = new Assignment("z", IntValue(0))
-    x.run()
-    y.run()
-    z.run()
-
     val somaXY = new Assignment("soma",new AddExpression(new VarRef("x"), new VarRef("y")))
     val soma5 = new Assignment("soma", new AddExpression(new VarRef("soma"), IntValue(5)))
     val retorno = new Assignment("z", new VarRef("soma"))
 
-    val xRef = new VarRef("x")
-    val yRef = new VarRef("y")
-    val zRef = new VarRef("z")
-
     val blockCmds = new BlockCommand(List(somaXY, soma5, retorno))
-    var procedure = new Procedure("sumPlus5", List(xRef, yRef), zRef, blockCmds)
+    var procedure = new Procedure("sumPlus5", List(("x", IntValue(0)), ("y", IntValue(0))), blockCmds, ("z", IntValue(0)))
     mapTable("sumPlus5", procedure)
 
     val res = lookupTable("sumPlus5")
     res match {
       case Some(p) => p should be (procedure)
       case _       => print("Error")
+    }
+
+    val res2 = lookup("x")
+    res2 match {
+      case Some(c) => c should be (IntValue(0))
+      case _ => print("Error")
     }
 
   }

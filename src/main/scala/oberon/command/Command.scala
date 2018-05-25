@@ -1,11 +1,13 @@
 package oberon.command
 
 import oberon.Environment._
-
 import oberon.expression._
 import oberon.callable._
 import oberon.expression.BoolValue
-import scala.io.StdIn.{readInt,readBoolean}
+import oberon.thread._
+
+import scala.collection.mutable.{HashMap, Map, Stack}
+import scala.io.StdIn.{readBoolean, readInt}
 
 trait Command {
   def run() : Unit
@@ -24,6 +26,13 @@ class Assignment(val id: String, val expression: Expression) extends Command {
     map(id, expression.eval())
   }
 
+}
+
+class Return(val id: String, val exp: Expression) extends Command {
+  override
+  def run() : Unit = {
+    map(id, exp.eval())
+  }
 }
 
 class IfElse(val cond: Expression, val ifCommand: Command, val elseCommand: Command) extends Command {
@@ -70,7 +79,6 @@ class While(val cond: Expression, val command: Command) extends Command {
   def run() : Unit = {
     println("Condicao:" + cond)
     println("Environment: ")
-    println(stack)
 
     val v = cond.eval.asInstanceOf[BoolValue]
 
@@ -105,10 +113,25 @@ class ReadBool() extends Command {
   }
 }
 
-class ProdedureCallCommand(val p: Procedure) extends Command {
+class ProcedureCall(val p: Procedure, val args: List[(String, Expression)]) extends Command {
   override
   def run() : Unit = {
-    p.args.foreach(e => e.eval())
-    p.cmds.run()
+
+    for (variable <- args) {
+      map(variable._1, variable._2.eval())
+    }
+
+    var t = new ProcedureThread(p, p.ret)
+    mapExecutionStack("id", t)
+
+    for (c <- p.blockCmds.cmds) {
+      c match {
+        case retCommand: Return => {
+          retCommand.run()
+          executionStack.pop()
+        }
+        case otherCmds: Command => { otherCmds.run()}
+      }
+    }
   }
 }

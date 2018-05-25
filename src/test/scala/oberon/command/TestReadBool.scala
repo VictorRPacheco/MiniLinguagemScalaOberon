@@ -14,7 +14,9 @@ class TestReadBool extends FlatSpec with Matchers with GivenWhenThen with Before
   behavior of "a read bool command"
 
   before {
-    clear()
+    clearDeclarations()
+    clearExecutionStack()
+    clearSymbolsTable()
   }
 
   it should "the environment must have a readBool() and show it on the screen" in {

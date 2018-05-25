@@ -12,7 +12,9 @@ class TestReadInt extends FlatSpec with Matchers with GivenWhenThen with BeforeA
   behavior of "a read int command"
 
   before {
-    clear()
+    clearDeclarations()
+    clearExecutionStack()
+    clearSymbolsTable()
   }
 
   it should "the environment must have a readInt() and show it on the screen" in {

@@ -13,8 +13,9 @@ class TestDeclareFunction extends FlatSpec with Matchers with GivenWhenThen with
   behavior of "a function declaration"
 
   before {
-    clear()
+    clearDeclarations()
     clearExecutionStack()
+    clearSymbolsTable()
   }
 
   it should "lookupExecStack(sumPlus5) return the declaration" in {

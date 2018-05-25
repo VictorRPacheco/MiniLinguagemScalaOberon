@@ -17,7 +17,9 @@ class TestWhile extends FlatSpec with Matchers with GivenWhenThen with BeforeAnd
   behavior of "a while command"
 
   before {
-    clear()
+    clearDeclarations()
+    clearExecutionStack()
+    clearSymbolsTable()
   }
   // soma := 0;
   //    x := 1;

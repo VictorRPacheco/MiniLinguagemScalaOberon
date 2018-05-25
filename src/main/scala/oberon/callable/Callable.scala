@@ -11,8 +11,20 @@ import oberon.expression._
  * Qualquer coisa que pode ser chamada ou referenciada
  */
 
-trait Callable
+trait Callable {
+  def id: String
+  def args: List[(String, Expression)]
+  def blockCmds: BlockCommand
+}
 
-class Procedure(val id: String, val args: List[Expression], val ret: Expression, val cmds: BlockCommand) extends Callable
+case class Procedure(
+                      id: String,
+                      args: List[(String, Expression)],
+                      blockCmds: BlockCommand,
+                      ret: (String, Expression)) extends Callable
 
-class Function(val id: String, val args: List[Expression], val retType: String, val cmds: BlockCommand) extends Callable
+case class Function(
+                      id: String,
+                      args: List[(String, Expression)],
+                      blockCmds: BlockCommand,
+                      ret: Expression ) extends Callable
