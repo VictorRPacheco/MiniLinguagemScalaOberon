@@ -26,38 +26,32 @@ class TestProcedureCall extends FlatSpec with Matchers with GivenWhenThen with B
   // }
   it should "lookup should return value 10" in {
 
-/*    val x = new Assignment("x", IntValue(1))
-    val y = new Assignment("y", IntValue(4))
-    val z = new Assignment("z", IntValue(0))
-    x.run()
-    y.run()
-    z.run()
-
+    // creating the procedure
     val somaXY = new Assignment("soma",new AddExpression(new VarRef("x"), new VarRef("y")))
     val soma5 = new Assignment("soma", new AddExpression(new VarRef("soma"), IntValue(5)))
-    val retorno = new Assignment("z", new VarRef("soma"))
+    val zSoma= new Assignment("z", new VarRef("soma"))
 
-    val xRef = new VarRef("x")
-    val yRef = new VarRef("y")
-    val zRef = new VarRef("z")
-
-    val blockCmds = new BlockCommand(List(somaXY, soma5, retorno))
-    // sumPlus5(1, 4, z)
-    var procedure = new Procedure("sumPlus5", List(xRef, yRef), zRef, blockCmds)
+    val blockCmds = new BlockCommand(List(somaXY, soma5, zSoma))
+    var procedure = new Procedure("sumPlus5", List(("x", IntValue(0)), ("y", IntValue(0))), blockCmds, ("z", IntValue(0)))
     mapTable("sumPlus5", procedure)
 
-    val p = lookupTable("sumPlus5")
-    print(p)
+    // new reference to a callable
+    // sumPlus5(x = 2, y = 3, z)
+    val p = new CallableRef("sumPlus5")
+    println(symbolsTable)
 
-    val p1 = new ProdedureCallCommand(p.getOrElse(0).asInstanceOf[Procedure])
-
+    val p1 = new ProcedureCall(p.eval().asInstanceOf[Procedure], List(("x", IntValue(2)), ("y", IntValue(3))))
     p1.run()
+
+    println(symbolsTable)
 
     val res = lookup("z")
     res match {
       case Some(v) => v should be (IntValue(10))
       case _       => print("Error")
-    }*/
+    }
+
+    executionStack.pop()
 
   }
 

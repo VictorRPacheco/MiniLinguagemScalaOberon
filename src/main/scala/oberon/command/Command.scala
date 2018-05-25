@@ -124,14 +124,7 @@ class ProcedureCall(val p: Procedure, val args: List[(String, Expression)]) exte
     var t = new ProcedureThread(p, p.ret)
     mapExecutionStack("id", t)
 
-    for (c <- p.blockCmds.cmds) {
-      c match {
-        case retCommand: Return => {
-          retCommand.run()
-          executionStack.pop()
-        }
-        case otherCmds: Command => { otherCmds.run()}
-      }
-    }
+    for (c <- p.blockCmds.cmds) c.run()
+    println(executionStack)
   }
 }

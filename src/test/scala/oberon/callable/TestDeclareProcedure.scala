@@ -44,7 +44,5 @@ class TestDeclareProcedure extends FlatSpec with Matchers with GivenWhenThen wit
       case Some(c) => c should be (IntValue(0))
       case _ => print("Error")
     }
-
   }
-
 }
