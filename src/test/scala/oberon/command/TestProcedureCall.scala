@@ -24,6 +24,8 @@ class TestProcedureCall extends FlatSpec with Matchers with GivenWhenThen with B
   //    soma = soma + 5
   //    z = soma
   // }
+  //
+  // sumPlus5(2, 5, z)
   it should "lookup should return value 10" in {
 
     // creating the procedure
@@ -38,12 +40,9 @@ class TestProcedureCall extends FlatSpec with Matchers with GivenWhenThen with B
     // new reference to a callable
     // sumPlus5(x = 2, y = 3, z)
     val p = new CallableRef("sumPlus5")
-    println(symbolsTable)
 
     val p1 = new ProcedureCall(p.eval().asInstanceOf[Procedure], List(("x", IntValue(2)), ("y", IntValue(3))))
     p1.run()
-
-    println(symbolsTable)
 
     val res = lookup("z")
     res match {
