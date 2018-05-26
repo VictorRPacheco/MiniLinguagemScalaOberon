@@ -1,36 +1,31 @@
 package oberon.expression
 
-import oberon.callable.Callable
+import oberon.Environment._
+import oberon.callable._
+import oberon.command._
+import oberon.expression._
+import oberon.thread.FunctionThread
 
-class FunctionExpression (var f: Callable) extends Expression {
+class FunctionExpression (var f: Callable, val args: List[(String, Expression)]) extends Expression {
   override
   def eval() : Value = {
-    IntValue(5)
-    // fazer todos os comandos
-    // return (tem que ser um comando especial)
-    //    dentro de turn só tem uma expressao
-    //    def run () { }
-    //    ou
-    //    poderia ser return exp.eval
 
-    // 3 hashmap diferente, 1 stack - pilha de execução com as declarações de procedimentos
-    //                      1 stack - as variáveis globais
-    //                      1 stack - com as declarações de procedimentos e funções
-    // considerar um comando return
-    // adicionar um campo stack dentro da declaração de um procedimento ou função
-    // declaração de variaveis - argumentos
-    // em procedure o return.run() ja resolve
-    // na function deve retornar uma expressao
-    //    while (o comando atual nao for um return) {
-    //
-    //    }
-    //    resolver o return de forma individual
-    // toda vez que chamar uma funçao ou procedimento deve ser necessario empilhar na pilha de execuçao
-    // associar os argumentos da chamada com os argumentos declarados
+    for (variable <- args) {
+      map(variable._1, variable._2.eval())
+    }
 
-    // programa em oberon herdaria de comandos, possui variaveis globais
-    // procedimentos e um comando principal, lá seta tds as variaveis globais e sao definidos todos os procedimentos
-    // depois executa o run do comando
+    var t = new FunctionThread(f.asInstanceOf[Function], f.asInstanceOf[Function].ret)
+    mapExecutionStack("id", t)
+
+    for (c <- f.blockCmds.cmds) {
+      if (!c.equals(f.blockCmds.cmds.tail)) c.run()
+      else {
+        c.run()
+        executionStack.pop()
+      }
+    }
+
+    var ret = lookup(f.blockCmds.cmds.last.asInstanceOf[Return].id).get
+    return ret
   }
-
 }

@@ -125,6 +125,7 @@ class ProcedureCall(val p: Procedure, val args: List[(String, Expression)]) exte
     mapExecutionStack("id", t)
 
     for (c <- p.blockCmds.cmds) c.run()
-    println(executionStack)
+
+    executionStack.pop()
   }
 }

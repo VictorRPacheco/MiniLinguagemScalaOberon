@@ -17,12 +17,14 @@ trait Callable {
   def blockCmds: BlockCommand
 }
 
+// these subprograms do not return a value directly.
 case class Procedure(
                       id: String,
                       args: List[(String, Expression)],
                       blockCmds: BlockCommand,
                       ret: (String, Expression)) extends Callable
 
+// these subprograms return a single value.
 case class Function(
                       id: String,
                       args: List[(String, Expression)],
