@@ -50,8 +50,6 @@ class TestProcedureCall extends FlatSpec with Matchers with GivenWhenThen with B
       case _       => print("Error")
     }
 
-    executionStack.pop()
-
   }
 
 }
