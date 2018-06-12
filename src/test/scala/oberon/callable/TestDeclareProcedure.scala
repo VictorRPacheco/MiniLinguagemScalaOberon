@@ -5,7 +5,7 @@ import org.scalatest.Matchers
 import org.scalatest.GivenWhenThen
 import org.scalatest.BeforeAndAfter
 import oberon.Environment._
-import oberon.command.{Assignment, BlockCommand, While}
+import oberon.command._
 import oberon.expression.{AddExpression, IntValue, SmallerEqExpression, VarRef}
 
 class TestDeclareProcedure extends FlatSpec with Matchers with GivenWhenThen with BeforeAndAfter {
@@ -13,36 +13,27 @@ class TestDeclareProcedure extends FlatSpec with Matchers with GivenWhenThen wit
   behavior of "a procedure declaration"
 
   before {
-    clearSymbolsTable()
-    clearDeclarations()
-    clearExecutionStack()
+    clear()
   }
 
   // procedure sumPlus5 (x, y: int, z: int) {
-  //    soma = x + y
-  //    soma = soma + 5
-  //    z = soma
+  //    z = x + y
   // }
   it should "lookup should return the function declaration" in {
+    val undef = oberon.expression.Undefined()
 
-    val somaXY = new Assignment("soma",new AddExpression(new VarRef("x"), new VarRef("y")))
-    val soma5 = new Assignment("soma", new AddExpression(new VarRef("soma"), IntValue(5)))
-    val retorno = new Assignment("z", new VarRef("soma"))
+    val printInt = new Print(IntValue(5))
+    val c = new BlockCommand(List(printInt))
+    val z = new Variable("z", "Integer", undef)
+    var procedure = new Procedure("soma", List(("x", undef), ("y", undef)), c, z)
+    val somaDeclaracao = new CallableDeclaration(procedure.id, procedure)
 
-    val blockCmds = new BlockCommand(List(somaXY, soma5, retorno))
-    var procedure = new Procedure("sumPlus5", List(("x", IntValue(0)), ("y", IntValue(0))), blockCmds, ("z", IntValue(0)))
-    mapTable("sumPlus5", procedure)
+    somaDeclaracao.run()
 
-    val res = lookupTable("sumPlus5")
+    val res = lookupCallable("soma")
     res match {
       case Some(p) => p should be (procedure)
       case _       => print("Error")
-    }
-
-    val res2 = lookup("x")
-    res2 match {
-      case Some(c) => c should be (IntValue(0))
-      case _ => print("Error")
     }
   }
 }

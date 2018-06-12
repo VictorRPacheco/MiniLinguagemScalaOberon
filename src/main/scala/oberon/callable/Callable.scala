@@ -1,32 +1,26 @@
 package oberon.callable
 
-import oberon.Environment._
-import oberon.command
 import oberon.command.BlockCommand
 import oberon.expression.Expression
-import oberon.expression._
+import oberon.expression.Value
+import oberon.Environment._
 
 /*
- * Definição de um Callable: Procedure, Function, Variable
- * Qualquer coisa que pode ser chamada ou referenciada
+ * Definition of Callabe: Any structure that can be called or referenced
+ * - Procedure: Subprogram that does not return a value directly (Call = command)
+ * - Function: Subprogram that returns a value directly (Call = expression)
+ * - Variable: Can be referenced anytime
+ *
  */
 
 trait Callable {
   def id: String
-  def args: List[(String, Expression)]
-  def blockCmds: BlockCommand
 }
 
-// these subprograms do not return a value directly.
-case class Procedure(
-                      id: String,
-                      args: List[(String, Expression)],
-                      blockCmds: BlockCommand,
-                      ret: (String, Expression)) extends Callable
+case class Procedure(id: String, args: List[(String, Expression)], blockCmds: BlockCommand, ret: Variable) extends Callable
 
-// these subprograms return a single value.
-case class Function(
-                      id: String,
-                      args: List[(String, Expression)],
-                      blockCmds: BlockCommand,
-                      ret: Expression ) extends Callable
+case class Function(id: String, args: List[(String, Expression)], blockCmds: BlockCommand) extends Callable
+
+case class Variable(id: String, dataType: String, dataValue: Value) extends Callable
+
+case class Undefined(id: String) extends Callable

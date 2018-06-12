@@ -6,50 +6,44 @@ import org.scalatest.GivenWhenThen
 import org.scalatest.BeforeAndAfter
 import oberon.Environment._
 import oberon.callable._
+import oberon.command.VariableDefinition
 import oberon.expression.{AddExpression, IntValue, VarRef}
 
 class TestProcedureCall extends FlatSpec with Matchers with GivenWhenThen with BeforeAndAfter {
 
-  before {
-    clearDeclarations()
-    clearExecutionStack()
-    clearSymbolsTable()
-  }
-
   behavior of "a procedure call"
 
+  before {
+    clear()
+  }
 
   // procedure sumPlus5 (x, y: int, z: int) {
-  //    soma = x + y
-  //    soma = soma + 5
-  //    z = soma
+  //    z = x + y
   // }
   //
   // sumPlus5(2, 5, z)
-  it should "lookup should return value 10" in {
+  it should "lookup should return value 7" in {
 
-    // creating the procedure
-    val somaXY = new Assignment("soma",new AddExpression(new VarRef("x"), new VarRef("y")))
-    val soma5 = new Assignment("soma", new AddExpression(new VarRef("soma"), IntValue(5)))
-    val zSoma= new Assignment("z", new VarRef("soma"))
+    val undef = oberon.expression.Undefined()
 
-    val blockCmds = new BlockCommand(List(somaXY, soma5, zSoma))
-    var procedure = new Procedure("sumPlus5", List(("x", IntValue(0)), ("y", IntValue(0))), blockCmds, ("z", IntValue(0)))
-    mapTable("sumPlus5", procedure)
+    val zReturn = new Variable("z", "Integer", undef)
+    val somaXY = new Assignment("z", new AddExpression(new VarRef("x"), new VarRef("y")))
+    val cmds = new BlockCommand(List(somaXY))
 
-    // new reference to a callable
-    // sumPlus5(x = 2, y = 3, z)
-    val p = new CallableRef("sumPlus5")
+    var procedure = new Procedure("soma", List(("x", undef), ("y", undef)), cmds, zReturn)
+    val somaDeclaracao = new CallableDeclaration(procedure.id, procedure)
 
-    val p1 = new ProcedureCall(p.eval().asInstanceOf[Procedure], List(("x", IntValue(2)), ("y", IntValue(3))))
-    p1.run()
+    somaDeclaracao.run()
+
+    val chamada = new ProcedureCall("soma" , List(IntValue(2), IntValue(5)), zReturn)
+
+    chamada.run()
 
     val res = lookup("z")
     res match {
-      case Some(v) => v should be (IntValue(10))
+      case Some(v) => v.dataValue should be (IntValue(7))
       case _       => print("Error")
     }
 
   }
-
 }

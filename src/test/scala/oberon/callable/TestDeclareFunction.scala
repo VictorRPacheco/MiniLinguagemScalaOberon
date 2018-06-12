@@ -5,39 +5,37 @@ import org.scalatest.Matchers
 import org.scalatest.GivenWhenThen
 import org.scalatest.BeforeAndAfter
 import oberon.Environment._
-import oberon.command.{Assignment, BlockCommand, While}
-import oberon.expression.{AddExpression, IntValue, SmallerEqExpression, VarRef}
+
+import oberon.command.{BlockCommand, CallableDeclaration, Return}
+import oberon.expression.{AddExpression}
 
 class TestDeclareFunction extends FlatSpec with Matchers with GivenWhenThen with BeforeAndAfter {
 
   behavior of "a function declaration"
 
   before {
-    clearDeclarations()
-    clearExecutionStack()
-    clearSymbolsTable()
+    clear()
   }
 
-  it should "lookup should return the function declaration" in {
+  // function soma(int x, y){
+  //    return x + y
+  //  }
+  it should "lookupCallable should return the function declaration" in {
 
-    val somaXY = new Assignment("soma",new AddExpression(new VarRef("x"), new VarRef("y")))
-    val soma5 = new Assignment("soma", new AddExpression(new VarRef("soma"), IntValue(5)))
-    val retorno = new Assignment("z", new VarRef("soma"))
+    val undef = oberon.expression.Undefined()
 
-    val blockCmds = new BlockCommand(List(somaXY, soma5, retorno))
-    var function = new Function("sumPlus5", List(("x", IntValue(0)), ("y", IntValue(0))), blockCmds, IntValue(1))
-    mapTable("sumPlus5", function)
+    val retCommand = new Return(new AddExpression(undef, undef))
+    val c = new BlockCommand(List(retCommand))
 
-    val res = lookupTable("sumPlus5")
+    var function = new Function("soma", List(("x", undef), ("y", undef)), c)
+    val somaDeclaracao = new CallableDeclaration(function.id, function)
+
+    somaDeclaracao.run()
+
+    val res = lookupCallable("soma")
     res match {
       case Some(f) => f should be (function)
       case _       => print("Error")
-    }
-
-    val res2 = lookup("x")
-    res2 match {
-      case Some(c) => c should be (IntValue(0))
-      case _ => print("Error")
     }
   }
 }

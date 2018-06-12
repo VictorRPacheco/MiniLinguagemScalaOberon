@@ -4,19 +4,14 @@ import org.scalatest.FlatSpec
 import org.scalatest.Matchers
 import org.scalatest.GivenWhenThen
 import org.scalatest.BeforeAndAfter
-
 import oberon.Environment._
+import oberon.callable.Variable
 import oberon.expression.IntValue
 import oberon.expression.DifExpression
 
 class TestIfThenElse extends FlatSpec with Matchers with GivenWhenThen with BeforeAndAfter {
 
   behavior of "an if-then-else command"
-  before {
-    clearDeclarations()
-    clearExecutionStack()
-    clearSymbolsTable()
-  }
 
   // y := 5;
   // if (10 != 10) {
@@ -26,8 +21,8 @@ class TestIfThenElse extends FlatSpec with Matchers with GivenWhenThen with Befo
   // }
   // end
   it should "lookup(y) should be equal to 0 after entering else instead of if" in {
-    var initial_assignment = new Assignment("y", IntValue(5))
-    initial_assignment.run()
+    var y = new VariableDefinition(new Variable("y", "Integer", IntValue(5)))
+    y.run()
 
     var ifAssignment = new Assignment("y", IntValue(7))
     var elseAssignment = new Assignment("y", IntValue(0))
@@ -36,7 +31,11 @@ class TestIfThenElse extends FlatSpec with Matchers with GivenWhenThen with Befo
     var _ifthen = new IfElse(ifExpr, ifAssignment, elseAssignment)
     _ifthen.run()
 
-    lookup("y") should be (Some(IntValue(0)))
+    val res = lookup("y")
+    res match {
+      case Some(v) => v.asInstanceOf[Variable].dataValue.eval() should be (IntValue(0))
+      case _       => println("Erros")
+    }
 
   }
 

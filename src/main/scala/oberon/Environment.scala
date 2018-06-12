@@ -1,66 +1,61 @@
 package oberon
 
 import scala.collection.mutable.Stack
-import scala.collection.mutable.Map
 import scala.collection.mutable.HashMap
+
 import oberon.expression.Value
-import oberon.expression.Expression
 import oberon.callable._
 import oberon.thread._
 
-import scala.collection.mutable
 
 object Environment {
-  var symbolsTable = new Stack[Map[String, Value]] ()
-  var callableTable = new Stack[Map[String, Callable]] ()
-  var executionStack = new Stack[Map[String, Thread]] ()
+  // Execution Stack =>  contains the current function or procedure call, can stack for recursive functions
+  var executionStack = new Stack[HashMap[String, Thread]]()
+  // Global Variables => variables defined outside of a function or procedure scope
+  var globalVariables = new HashMap[String, Variable]()
+  // Program Definitions  => definitions of programs (functions, procedures)
+  var progDefinitions = new HashMap[String, Callable]()
 
+  // Insert new space for a new Thread
   def push() {
-    symbolsTable.push(new HashMap[String, Value]())
+    executionStack.push(new HashMap[String, Thread])
   }
 
-  def pushTable(){
-    callableTable.push(new HashMap[String, Callable]())
-  }
-
+  // Pops a thread that finished executing
   def pop() {
-    symbolsTable.pop()
+    executionStack.pop()
   }
 
-  def map(id: String, value: Value) {
-    if(symbolsTable.isEmpty) {
-      push()
+  // Adds a new variable to the global variables hashmap or the local variables
+  def map(id: String, variable: Variable) {
+    // No function/program executing yet means we have a global variable
+    if (executionStack.isEmpty) {
+      if(globalVariables.get(id).isDefined) globalVariables.remove(id)
+      globalVariables += (id -> (variable))
     }
-    symbolsTable.top += (id -> value)
-  }
-
-  def mapExecutionStack(id: String, t: Thread) = {
-    if(executionStack.isEmpty) {
-      executionStack.push(new HashMap[String, Thread]())
-    }
-    executionStack.top += (id -> t)
-  }
-
-  def lookup(id: String) : Option[Value] =
-    if(symbolsTable.isEmpty) None else Some(symbolsTable.top(id))
-
-  def mapTable(id: String, c: Callable) = {
-    if(callableTable.isEmpty) {
-      callableTable.push(new HashMap[String, Callable]())
-    }
-    callableTable.top += (id -> c)
-
-    // declaring arguments in procedure/function
-    for (arg <- c.args) {
-      map(arg._1, arg._2.eval())
+    // There's a function or procedure executing, create new local variable
+    else {
+      var t = executionStack.top.toList.head._2.asInstanceOf[Thread]
+      if(t.localVariables.get(id) != null) t.localVariables.remove(id)
+      t.addVariable(id, variable)
     }
   }
 
-  def lookupTable(id: String) : Option[Callable] =
-    if(callableTable.isEmpty) None else Some(callableTable.top(id))
+  def lookup(id: String): Option[Variable] = {
+     if(globalVariables.isEmpty || globalVariables.get(id).isEmpty) {
+       executionStack.top.toList.head._2.localVariables.get(id)
+     }
+     else
+       globalVariables.get(id)
+  }
 
-  def clearSymbolsTable() : Unit = { symbolsTable.clear() }
-  def clearDeclarations() : Unit = { callableTable.clear() }
-  def clearExecutionStack() : Unit = { executionStack.clear() }
+  def lookupCallable(id: String): Option[Callable] = {
+    if(progDefinitions.isEmpty) None
+    else progDefinitions.get(id)
+  }
+
+  def clear() : Unit = {
+    executionStack.clear()
+  }
 
 }

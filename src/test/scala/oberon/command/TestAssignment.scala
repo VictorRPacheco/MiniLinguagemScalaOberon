@@ -14,9 +14,7 @@ class TestAssignment extends FlatSpec with Matchers with GivenWhenThen with Befo
   behavior of "an assignment command"
 
   before {
-    clearDeclarations()
-    clearExecutionStack()
-    clearSymbolsTable()
+    clear()
   }
 
   it should "the environment must have an assignment x -> 5" in { 

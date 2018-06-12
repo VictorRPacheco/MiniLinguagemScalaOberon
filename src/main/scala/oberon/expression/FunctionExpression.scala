@@ -1,31 +1,36 @@
 package oberon.expression
 
 import oberon.Environment._
-import oberon.callable._
+import oberon.callable.CallableRef
+import oberon.callable.Variable
 import oberon.command._
-import oberon.expression._
 import oberon.thread.FunctionThread
 
-class FunctionExpression (var f: Callable, val args: List[(String, Expression)]) extends Expression {
+import scala.collection.mutable.HashMap
+
+class FunctionExpression (var id: String, val args: List[(String, Expression)]) extends Expression {
   override
   def eval() : Value = {
+    var f = (new CallableRef(id).eval()).asInstanceOf[oberon.callable.Function]
+    var localVariables = new(HashMap[String, Variable])
+    var fThread = new FunctionThread(f.id, f, localVariables)
 
     for (variable <- args) {
-      map(variable._1, variable._2.eval())
+      var v = new Variable(variable._1, "type", variable._2.eval())
+      fThread.addVariable(variable._1, v)
     }
 
-    var t = new FunctionThread(f.asInstanceOf[Function], f.asInstanceOf[Function].ret)
-    mapExecutionStack("id", t)
+    push()
+    executionStack.top += (f.id -> fThread)
 
-    for (c <- f.blockCmds.cmds) {
-      if (!c.equals(f.blockCmds.cmds.tail)) c.run()
-      else {
-        c.run()
-        executionStack.pop()
+      for (c <- f.blockCmds.cmds){
+      if(c.isInstanceOf[Return]) {
+        return c.asInstanceOf[Return].runReturn()
       }
+      else c.run()
     }
 
-    var ret = lookup(f.blockCmds.cmds.last.asInstanceOf[Return].id).get
-    return ret
+    executionStack.pop()
+    return IntValue(0)
   }
 }

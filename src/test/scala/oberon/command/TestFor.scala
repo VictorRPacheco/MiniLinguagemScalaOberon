@@ -16,11 +16,7 @@ class TestFor extends FlatSpec with Matchers with GivenWhenThen with BeforeAndAf
 
   behavior of "a for command"
 
-  before {
-    clearDeclarations()
-    clearExecutionStack()
-    clearSymbolsTable()
-  }
+
   // soma := 0;
   // for (x := 1; x <= 10; x := x + 1)
   //    soma := soma + x;
