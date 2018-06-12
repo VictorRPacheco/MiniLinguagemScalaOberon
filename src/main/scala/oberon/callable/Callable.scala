@@ -17,9 +17,9 @@ trait Callable {
   def id: String
 }
 
-case class Procedure(id: String, args: List[(String, Expression)], blockCmds: BlockCommand, ret: Variable) extends Callable
+case class Procedure(id: String, args: List[(String, String)], blockCmds: BlockCommand, ret: Variable) extends Callable
 
-case class Function(id: String, args: List[(String, Expression)], blockCmds: BlockCommand) extends Callable
+case class Function(id: String, args: List[(String, String)], blockCmds: BlockCommand) extends Callable
 
 case class Variable(id: String, dataType: String, dataValue: Value) extends Callable
 

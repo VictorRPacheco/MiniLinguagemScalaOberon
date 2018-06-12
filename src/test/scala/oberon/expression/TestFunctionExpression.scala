@@ -26,11 +26,11 @@ class TestFunctionExpression extends FlatSpec with Matchers with GivenWhenThen w
     val somaXY = new Return(new AddExpression(new VarRef("x"), new VarRef("y")))
     val cmds = new BlockCommand(List(somaXY))
 
-    var function = new Function("soma", List(("x", undef), ("y", undef)), cmds)
+    var function = new Function("soma", List(("x", "Integer"), ("y", "Integer")), cmds)
     val functionDeclaration = new CallableDeclaration(function.id, function)
     functionDeclaration.run()
 
-    val functionCall = new FunctionExpression("soma", List(("x", IntValue(2)), ("y", IntValue(5))))
+    val functionCall = new FunctionExpression("soma", List(IntValue(2), IntValue(5)))
 
     functionCall.eval() should be(IntValue(7))
 

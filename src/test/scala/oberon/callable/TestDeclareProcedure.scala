@@ -25,7 +25,7 @@ class TestDeclareProcedure extends FlatSpec with Matchers with GivenWhenThen wit
     val printInt = new Print(IntValue(5))
     val c = new BlockCommand(List(printInt))
     val z = new Variable("z", "Integer", undef)
-    var procedure = new Procedure("soma", List(("x", undef), ("y", undef)), c, z)
+    var procedure = new Procedure("soma", List(("x", "Integer"), ("y", "Integer")), c, z)
     val somaDeclaracao = new CallableDeclaration(procedure.id, procedure)
 
     somaDeclaracao.run()

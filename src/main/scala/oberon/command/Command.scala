@@ -120,7 +120,7 @@ class ReadBool() extends Command {
 class CallableDeclaration(id: String, val callable: Callable) extends Command {
   override
   def run() : Unit = {
-    progDefinitions += (id -> callable)
+    progDeclarations += (id -> callable)
   }
 }
 
@@ -131,26 +131,39 @@ class VariableDefinition(val variable: Variable) extends Command {
   }
 }
 
-class ProcedureCall(val procedureName: String, val args: List[Expression], val ret: Variable) extends Command {
+class ProcedureCall(val id: String, val args: List[Expression], val ret: Variable) extends Command {
   override
   def run() : Unit = {
-    var localVariables = new(HashMap[String, Variable])
-    var p = new CallableRef(procedureName).eval()
-    var pThread = new ProcedureThread(p.id, p.asInstanceOf[Procedure], localVariables)
+
+    // get the procedure declaration
+    var procDeclaration = new CallableRef(id).eval().asInstanceOf[Procedure]
+
+    // Create new localVariables HashMap
+    var localVariables = new HashMap[String, Variable]
+
+    // Create a new thread for executing the procedure
+    var procThread = new ProcedureThread(procDeclaration.id, procDeclaration, localVariables)
+
+    // Instantiate the formal parameters
+    var newProcArgs = procDeclaration.args
     var n = 0
-    for (variable <- args) {
-      var v = new Variable(p.asInstanceOf[Procedure].args(n)._1, "type", args(n).eval())
-      pThread.addVariable(p.asInstanceOf[Procedure].args(n)._1, v)
+    // For all parameters
+    for (v <- newProcArgs) {
+      if(args.size != procDeclaration.args.size) println("Error de argumentos")
+      // v._1 = variable name
+      // v._2 = variable value type
+      procThread.addVariable(v._1, new Variable(v._1 , v._2, args(n).eval()))
       n+=1
     }
 
+    // Adding the thread to the execution stack
     push()
-    executionStack.top += (p.id -> pThread)
+    executionStack.top += (procThread.id -> procThread)
 
     var retVariable = new VariableDefinition(ret)
     retVariable.run()
 
-    for (c <- p.asInstanceOf[Procedure].blockCmds.cmds){
+    for (c <- procDeclaration.blockCmds.cmds){
       c.run()
     }
 
