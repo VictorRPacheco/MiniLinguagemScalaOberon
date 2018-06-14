@@ -11,7 +11,6 @@ import oberon.expression.Value
 
 class TestFunctionExpression extends FlatSpec with Matchers with GivenWhenThen with BeforeAndAfter {
 
-
   behavior of "a function expression"
 
   // function soma (x, y: int) {
@@ -19,6 +18,11 @@ class TestFunctionExpression extends FlatSpec with Matchers with GivenWhenThen w
   // }
   //
   // soma(2, 5)
+
+  before {
+    clear()
+  }
+
   it should "lookup should return value 7" in {
 
     val undef = oberon.expression.Undefined()
@@ -26,7 +30,7 @@ class TestFunctionExpression extends FlatSpec with Matchers with GivenWhenThen w
     val somaXY = new Return(new AddExpression(new VarRef("x"), new VarRef("y")))
     val cmds = new BlockCommand(List(somaXY))
 
-    var function = new Function("soma", List(("x", "Integer"), ("y", "Integer")), cmds)
+    var function = new Function("soma", List(("x", "Integer"), ("y", "Integer")), cmds, "Integer")
     val functionDeclaration = new CallableDeclaration(function.id, function)
     functionDeclaration.run()
 

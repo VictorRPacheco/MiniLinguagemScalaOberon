@@ -41,7 +41,7 @@ class TestProcedureCall extends FlatSpec with Matchers with GivenWhenThen with B
 
     val res = lookup("z")
     res match {
-      case Some(v) => v.dataValue should be (IntValue(7))
+      case Some(v) => v.dataValue.eval() should be (IntValue(7))
       case _       => print("Error")
     }
 

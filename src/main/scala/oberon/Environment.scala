@@ -72,6 +72,8 @@ object Environment {
   // clear the execution stack, delete all threads
   def clear() : Unit = {
     executionStack.clear()
+    globalVariables.clear()
+    progDeclarations.clear()
   }
 
 }

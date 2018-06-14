@@ -4,6 +4,7 @@ import oberon.Environment._
 import oberon.callable.{CallableRef, Variable}
 import oberon.command._
 import oberon.thread.FunctionThread
+import oberon.visitor.Visitor
 
 import scala.collection.mutable.HashMap
 
@@ -46,5 +47,22 @@ class FunctionExpression (var id: String, val args: List[Expression]) extends Ex
 
     executionStack.pop()
     return Undefined()
+  }
+
+  override def calculateType(): Type = {
+    // Get the function declaration
+    var functionDeclaration = new CallableRef(id).eval().asInstanceOf[oberon.callable.Function]
+
+    if(functionDeclaration.ret.equals("Integer")){
+      return TInt()
+    }
+    if(functionDeclaration.ret.equals("Boolean")){
+      return TBool()
+    }
+    TUndefined()
+  }
+
+  def accept(v: Visitor) : Unit = {
+    v.visit(this)
   }
 }
