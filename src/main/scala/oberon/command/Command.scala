@@ -37,7 +37,9 @@ class Return(val expression: Expression) extends Command {
   def run(){}
 
   def runReturn(): Value = {
-    expression.eval()
+    var v = expression.eval()
+    executionStack.pop()
+    return v
   }
 
 }

@@ -4,11 +4,7 @@ import org.scalatest.FlatSpec
 import org.scalatest.Matchers
 import org.scalatest.GivenWhenThen
 import org.scalatest.BeforeAndAfter
-
-import oberon.expression.IntValue
-import oberon.expression.BoolValue
-import oberon.expression.AddExpression
-
+import oberon.expression.{AddExpression, BiggerEqExpression, BoolValue, IntValue}
 import oberon.visitor.PrettyPrinter
 
 class TestPrettyPrinter extends FlatSpec with Matchers with GivenWhenThen with BeforeAndAfter {
@@ -26,4 +22,14 @@ class TestPrettyPrinter extends FlatSpec with Matchers with GivenWhenThen with B
 
     pp.str should be ("(5 + 10)")
   }
+
+  it should "print false when we call accept in such a value" in {
+    val boolValue = BoolValue(false)
+    val pp = new PrettyPrinter()
+
+    boolValue.accept(pp)
+
+    pp.str should be("False")
+  }
+
 }

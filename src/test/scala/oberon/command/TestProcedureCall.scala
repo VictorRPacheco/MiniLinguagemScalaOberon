@@ -30,7 +30,7 @@ class TestProcedureCall extends FlatSpec with Matchers with GivenWhenThen with B
     val somaXY = new Assignment("z", new AddExpression(new VarRef("x"), new VarRef("y")))
     val cmds = new BlockCommand(List(somaXY))
 
-    var procedure = new Procedure("soma", List(("x", "Integer"), ("y", "Integer")), cmds, zReturn)
+    var procedure = new Procedure("soma", "Integer", List(("x", "Integer"), ("y", "Integer")), cmds, zReturn)
     val somaDeclaracao = new CallableDeclaration(procedure.id, procedure)
 
     somaDeclaracao.run()

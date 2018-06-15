@@ -27,7 +27,7 @@ class TestDeclareFunction extends FlatSpec with Matchers with GivenWhenThen with
     val retCommand = new Return(new AddExpression(undef, undef))
     val c = new BlockCommand(List(retCommand))
 
-    var function = new Function("soma", List(("x", "Integer"), ("y", "Integer")), c, "Integer")
+    var function = new Function("soma", "Integer", List(("x", "Integer"), ("y", "Integer")), c)
     val somaDeclaracao = new CallableDeclaration(function.id, function)
 
     somaDeclaracao.run()

@@ -96,14 +96,13 @@ class PrettyPrinter extends Visitor {
   def visit(c: Return)        : Unit = { }
 
   private def visitBinExp(e: BinExpression) : (String, String) = {
-    //e.lhs.accept(this)
+    e.lhs.accept(this)
     val l = str
 
-    //e.rhs.accept(this)
+    e.rhs.accept(this)
     val r = str
 
     return (l, r)
   }
-
 
 }

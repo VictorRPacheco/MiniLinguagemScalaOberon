@@ -2,7 +2,7 @@ package oberon.expression
 
 import oberon.Environment._
 import oberon.callable.{CallableRef, Variable}
-import oberon.command._
+import oberon.command.{Return, IfElse}
 import oberon.thread.FunctionThread
 import oberon.visitor.Visitor
 
@@ -39,13 +39,22 @@ class FunctionExpression (var id: String, val args: List[Expression]) extends Ex
 
     // Start running commands
     for (c <- functionDeclaration.blockCmds.cmds){
-      if(c.isInstanceOf[Return]) {
-        return c.asInstanceOf[Return].runReturn()
+      c match {
+        case c: Return => { return c.runReturn() }
+        case c: IfElse => {
+          val v = c.cond.eval.asInstanceOf[BoolValue]
+          v match {
+            case BoolValue(true)  => {
+              if(c.ifCommand.isInstanceOf[Return]) return c.ifCommand.asInstanceOf[Return].runReturn()
+            }
+            case BoolValue(false) => {
+              if(c.elseCommand.isInstanceOf[Return]) return c.elseCommand.asInstanceOf[Return].runReturn()
+            }
+          }
+        }
+        case _ => c.run()
       }
-      else c.run()
     }
-
-    executionStack.pop()
     return Undefined()
   }
 
@@ -53,10 +62,10 @@ class FunctionExpression (var id: String, val args: List[Expression]) extends Ex
     // Get the function declaration
     var functionDeclaration = new CallableRef(id).eval().asInstanceOf[oberon.callable.Function]
 
-    if(functionDeclaration.ret.equals("Integer")){
+    if(functionDeclaration.funcType.equals("Integer")){
       return TInt()
     }
-    if(functionDeclaration.ret.equals("Boolean")){
+    if(functionDeclaration.funcType.equals("Boolean")){
       return TBool()
     }
     TUndefined()
