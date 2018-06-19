@@ -73,12 +73,9 @@ class For(val initCommand: Command, val cond: Expression, val lastCommand: Comma
   override
   def run() : Unit = {
       initCommand.run()
+      val newWhile = new While(cond, new BlockCommand(List(command, lastCommand)))
+      newWhile.run()
       val v = cond.eval.asInstanceOf[BoolValue]
-      v match {
-        case BoolValue(true) => { command.run(); lastCommand.run(); this.run(); }
-        case _               => { }
-      }
-
   }
 
 }
@@ -122,7 +119,7 @@ class ReadBool() extends Command {
 class CallableDeclaration(id: String, val callable: Callable) extends Command {
   override
   def run() : Unit = {
-    progDeclarations += (id -> callable)
+    mapCallable(id, callable)
   }
 }
 

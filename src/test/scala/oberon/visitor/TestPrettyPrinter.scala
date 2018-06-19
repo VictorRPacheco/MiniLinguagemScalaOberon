@@ -29,7 +29,7 @@ class TestPrettyPrinter extends FlatSpec with Matchers with GivenWhenThen with B
 
     boolValue.accept(pp)
 
-    pp.str should be("False")
+    pp.str should be("false")
   }
 
 }
