@@ -8,7 +8,7 @@ import org.scalatest.BeforeAndAfter
 
 import oberon.Environment._
 import oberon.callable.Variable
-import oberon.expression.IntValue
+import oberon.expression.{TInt, IntValue}
 
 class TestAssignment extends FlatSpec with Matchers with GivenWhenThen with BeforeAndAfter {
 
@@ -19,7 +19,7 @@ class TestAssignment extends FlatSpec with Matchers with GivenWhenThen with Befo
   }
 
   it should "the environment must have an assignment x -> 5" in {
-    val variableX = new VariableDefinition(new Variable("x", "Integer", IntValue(5)))
+    val variableX = new VariableDefinition(new Variable("x", TInt(), IntValue(5)))
     val assignment = new Assignment("x", IntValue(10))
 
     variableX.run()

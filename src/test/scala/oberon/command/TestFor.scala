@@ -22,8 +22,8 @@ class TestFor extends FlatSpec with Matchers with GivenWhenThen with BeforeAndAf
   // print(soma);
 
   it should "lookup(soma) must be equal to 55 after a loop summing up 1 to 10" in {
-    val soma = new VariableDefinition(new Variable("soma", "Integer", IntValue(0)))     // soma := 0;
-    val initCommandFor = new VariableDefinition(new Variable("x", "Integer", IntValue(1)))           // x := 1;
+    val soma = new VariableDefinition(new Variable("soma", TInt(), IntValue(0)))     // soma := 0;
+    val initCommandFor = new VariableDefinition(new Variable("x", TInt(), IntValue(1)))           // x := 1;
 
     val cond = new SmallerEqExpression(new VarRef("x"), IntValue(10))                                      // x<=10
     val lastCommandFor = new Assignment("x", new AddExpression(new VarRef("x"), IntValue(1)))          // X + 1

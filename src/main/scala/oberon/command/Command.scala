@@ -23,22 +23,39 @@ class BlockCommand(val cmds: List[Command]) extends Command {
 class Assignment(val id: String, val expression: Expression) extends Command {
   override
   def run() : Unit = {
+    // check type of assignment expression
+    if (expression.typeCheck().equals(false)) {
+      throw new RuntimeException("Assignment expression with invalid type checking")
+    }
+
     lookup(id) match {
       case Some(v) => {
         var newVariable = new Variable(v.id, v.dataType, expression.eval())
         map(id, newVariable)
       }
-      case _ => { println("Error")}
+      case _ => { throw new RuntimeException("Trying to assign to a variable that wasn't declared")}
     }
   }
 }
 
 class Return(val expression: Expression) extends Command {
-  def run(){}
+  def run(): Unit = {
+    // check type of return expression
+    if (expression.typeCheck().equals(false)) {
+      throw new RuntimeException("Tipo da expressão no return falhou")
+    }
 
+    expression.eval()
+  }
+
+  // return for function
   def runReturn(): Value = {
+
     var v = expression.eval()
+
+    // pop current thread since reached return
     executionStack.pop()
+    // return value
     return v
   }
 
@@ -47,6 +64,12 @@ class Return(val expression: Expression) extends Command {
 class IfElse(val cond: Expression, val ifCommand: Command, val elseCommand: Command) extends Command {
   override
   def run() : Unit = {
+
+    // perform type checking on condition value
+    if (cond.typeCheck().equals(false)) {
+      throw new RuntimeException("Tipo da condição falhou no IfElse")
+    }
+
     val v = cond.eval.asInstanceOf[BoolValue]
 
     v match {
@@ -59,6 +82,12 @@ class IfElse(val cond: Expression, val ifCommand: Command, val elseCommand: Comm
 class IfThen(val cond: Expression, val command: Command) extends Command {
   override
   def run() : Unit = {
+
+    // perform type checking on condition value
+    if (cond.typeCheck().equals(false)) {
+      throw new RuntimeException("Tipo da condição falhou no IfThen")
+    }
+
     val v = cond.eval.asInstanceOf[BoolValue]
 
     v match {
@@ -72,10 +101,13 @@ class IfThen(val cond: Expression, val command: Command) extends Command {
 class For(val initCommand: Command, val cond: Expression, val lastCommand: Command, val command: Command) extends Command {
   override
   def run() : Unit = {
+      // run first command
       initCommand.run()
+
+      // run as a normal while, with the last command attached to the end
       val newWhile = new While(cond, new BlockCommand(List(command, lastCommand)))
       newWhile.run()
-      val v = cond.eval.asInstanceOf[BoolValue]
+
   }
 
 }
@@ -83,6 +115,12 @@ class For(val initCommand: Command, val cond: Expression, val lastCommand: Comma
 class While(val cond: Expression, val command: Command) extends Command {
   override
   def run() : Unit = {
+
+    // perform type checking on condition value
+    if (cond.typeCheck().equals(false)) {
+      throw new RuntimeException("Tipo da condição falhou no For")
+    }
+
     val v = cond.eval.asInstanceOf[BoolValue]
 
     v match {
@@ -92,12 +130,17 @@ class While(val cond: Expression, val command: Command) extends Command {
   }
 }
 
-class Print(val exp: Expression) extends Command {
+class Print(val expression: Expression) extends Command {
   override
   def run() : Unit = {
-    exp.getClass.getDeclaredFields foreach { f =>
+    // perform type checking on expression to be printed
+    if (expression.typeCheck().equals(false)) {
+      throw new RuntimeException("Tipo da condição falhou no Print")
+    }
+
+    expression.getClass.getDeclaredFields foreach { f =>
       f.setAccessible(true)
-      print(f.get(exp))
+      print(f.get(expression))
     }
   }
 }
@@ -148,9 +191,16 @@ class ProcedureCall(val id: String, val args: List[Expression], val ret: Variabl
     var n = 0
     // For all parameters
     for (v <- newProcArgs) {
-      if(args.size != procDeclaration.args.size) println("Error de argumentos")
+      // check number of arguments matches the number of arguments declared in the procedure
+      if(args.size != procDeclaration.args.size) throw new RuntimeException("Invalid arguments to procedure")
       // v._1 = variable name
       // v._2 = variable value type
+
+      // perform typecheck on arguments
+      if (args(n).calculateType() != procDeclaration.procType) throw new RuntimeException("Invalid argument type")
+
+      // add variable to the current procedure thread
+      //                      id                 name, type, value
       procThread.addVariable(v._1, new Variable(v._1 , v._2, args(n).eval()))
       n+=1
     }
@@ -159,16 +209,25 @@ class ProcedureCall(val id: String, val args: List[Expression], val ret: Variabl
     push()
     executionStack.top += (procThread.id -> procThread)
 
+    // Define the return variable
     var retVariable = new VariableDefinition(ret)
     retVariable.run()
 
+    // Run commands
     for (c <- procDeclaration.blockCmds.cmds){
       c.run()
     }
 
-    var retCommand = new VariableDefinition(lookup(ret.id).get)
+    // save return variable value
+    var retValue = new VarRef(ret.id).eval()
+
+    // remove the current thread
     executionStack.pop()
-    retCommand.run()
+
+    // declare the return variable like a global variable
+    var newReturnVariable = new Variable(ret.id, ret.dataType, retValue)
+    var newReturn = new VariableDefinition(newReturnVariable)
+    newReturn.run()
 
   }
 }

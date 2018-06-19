@@ -25,8 +25,8 @@ class TestWhile extends FlatSpec with Matchers with GivenWhenThen with BeforeAnd
   // print(soma);
   it should "lookup(soma) must be equal to 55 after a loop summing up 1 to 10" in {
 
-    val soma = new VariableDefinition(new Variable("soma", "Integer", IntValue(0)))
-    val x = new VariableDefinition(new Variable("x", "Integer", IntValue(1)))
+    val soma = new VariableDefinition(new Variable("soma", TInt(), IntValue(0)))
+    val x = new VariableDefinition(new Variable("x", TInt(), IntValue(1)))
 
     soma.run()
     x.run()

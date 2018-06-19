@@ -30,7 +30,7 @@ class TestFunctionExpression extends FlatSpec with Matchers with GivenWhenThen w
     val somaXY = new Return(new AddExpression(new VarRef("x"), new VarRef("y")))
     val cmds = new BlockCommand(List(somaXY))
 
-    var function = new Function("soma", "Integer", List(("x", "Integer"), ("y", "Integer")), cmds)
+    var function = new Function("soma", TInt(), List(("x", TInt()), ("y", TInt())), cmds)
     val functionDeclaration = new CallableDeclaration(function.id, function)
     functionDeclaration.run()
 
@@ -66,7 +66,7 @@ class TestFunctionExpression extends FlatSpec with Matchers with GivenWhenThen w
     var cmds = new BlockCommand(List(ifelse, debug))
 
     // creating function declaration
-    var factorial = new Function("factorial", "Integer", List(("n", "Integer")), cmds)
+    var factorial = new Function("factorial", TInt(), List(("n", TInt())), cmds)
     var factorialDeclaration = new CallableDeclaration(factorial.id, factorial)
     factorialDeclaration.run()
 
@@ -108,10 +108,10 @@ class TestFunctionExpression extends FlatSpec with Matchers with GivenWhenThen w
     var cmds = new BlockCommand(List(ifelse, debug))
 
     // creating function declaration
-    var factorial = new Function("factorial", "Integer", List(("n", "Integer")), cmds)
+    var factorial = new Function("factorial", TInt(), List(("n", TInt())), cmds)
     var factorialDeclaration = new CallableDeclaration(factorial.id, factorial)
     factorialDeclaration.run()
-    var dumbFactorial = new Function("factorial", "Integer", List(("n", "Integer")), cmds)
+    var dumbFactorial = new Function("factorial", TInt(), List(("n", TInt())), cmds)
     var dumbFactorialDeclaration = new CallableDeclaration(dumbFactorial.id, dumbFactorial)
     val thrown = intercept[Exception] {
       dumbFactorialDeclaration.run()
@@ -130,7 +130,7 @@ class TestFunctionExpression extends FlatSpec with Matchers with GivenWhenThen w
 
     // declaring global variable x
     // x = false
-    var globalX = new VariableDefinition(new Variable("x", "Boolean", BoolValue(false)))
+    var globalX = new VariableDefinition(new Variable("x", TBool(), BoolValue(false)))
     globalX.run()
 
     // building function cause we didn't make a parser (oops)
@@ -143,7 +143,7 @@ class TestFunctionExpression extends FlatSpec with Matchers with GivenWhenThen w
     var cmds = new BlockCommand(List(ifElse))
 
     // declaring function
-    var newFunction = new Function("valueEquals", "Boolean", List(("x", "Boolean"), ("y", "Boolean")), cmds)
+    var newFunction = new Function("valueEquals", TBool(), List(("x", TBool()), ("y", TBool())), cmds)
     var newFunctionDeclaration = new CallableDeclaration(newFunction.id, newFunction)
     newFunctionDeclaration.run()
 

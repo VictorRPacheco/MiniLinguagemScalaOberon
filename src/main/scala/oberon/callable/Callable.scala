@@ -1,9 +1,8 @@
 package oberon.callable
 
 import oberon.command.BlockCommand
-import oberon.expression.Expression
 import oberon.expression.Value
-import oberon.Environment._
+import oberon.expression.Type
 
 /*
  * Definition of Callabe: Any structure that can be called or referenced
@@ -17,10 +16,10 @@ trait Callable {
   def id: String
 }
 
-case class Procedure(id: String, procType: String, args: List[(String, String)], blockCmds: BlockCommand, ret: Variable) extends Callable
+case class Procedure(id: String, procType: Type, args: List[(String, Type)], blockCmds: BlockCommand, ret: Variable) extends Callable
 
-case class Function(id: String, funcType: String, args: List[(String, String)], blockCmds: BlockCommand) extends Callable
+case class Function(id: String, funcType: Type, args: List[(String, Type)], blockCmds: BlockCommand) extends Callable
 
-case class Variable(id: String, dataType: String, dataValue: Value) extends Callable
+case class Variable(id: String, dataType: Type, dataValue: Value) extends Callable
 
 case class Undefined(id: String) extends Callable

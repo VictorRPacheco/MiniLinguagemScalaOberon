@@ -18,10 +18,10 @@ class VarRef(val id: String) extends Expression {
   override def calculateType(): Type = {
     var v = lookup(id) match {
       case Some(v) => {
-        if(v.asInstanceOf[Variable].dataType.equals("Integer")){
+        if(v.asInstanceOf[Variable].dataType.equals(TInt())){
           return TInt()
         }
-        if(v.asInstanceOf[Variable].dataType.equals("Boolean")){
+        if(v.asInstanceOf[Variable].dataType.equals(TBool())){
           return TBool()
         }
       }

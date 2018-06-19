@@ -6,7 +6,7 @@ import org.scalatest.GivenWhenThen
 import org.scalatest.BeforeAndAfter
 import oberon.Environment._
 import oberon.command._
-import oberon.expression.{AddExpression, IntValue, SmallerEqExpression, VarRef}
+import oberon.expression.{TInt, IntValue}
 
 class TestDeclareProcedure extends FlatSpec with Matchers with GivenWhenThen with BeforeAndAfter {
 
@@ -24,8 +24,8 @@ class TestDeclareProcedure extends FlatSpec with Matchers with GivenWhenThen wit
 
     val printInt = new Print(IntValue(5))
     val c = new BlockCommand(List(printInt))
-    val z = new Variable("z", "Integer", undef)
-    var procedure = new Procedure("soma", "Integer",  List(("x", "Integer"), ("y", "Integer")), c, z)
+    val z = new Variable("z", TInt(), undef)
+    var procedure = new Procedure("soma", TInt(),  List(("x", TInt()), ("y", TInt())), c, z)
     val somaDeclaracao = new CallableDeclaration(procedure.id, procedure)
 
     somaDeclaracao.run()

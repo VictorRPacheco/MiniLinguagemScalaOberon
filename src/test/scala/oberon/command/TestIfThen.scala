@@ -6,8 +6,7 @@ import org.scalatest.GivenWhenThen
 import org.scalatest.BeforeAndAfter
 
 import oberon.Environment._
-import oberon.expression.IntValue
-import oberon.expression.DifExpression
+import oberon.expression.{IntValue, DifExpression, TInt}
 import oberon.callable.Variable
 
 class TestIfThen extends FlatSpec with Matchers with GivenWhenThen with BeforeAndAfter {
@@ -17,7 +16,7 @@ class TestIfThen extends FlatSpec with Matchers with GivenWhenThen with BeforeAn
   // y := 5
   // if (10 != 1) y := 5
   it should "lookup(y) should be 7 after if successful" in {
-    var y = new VariableDefinition(new Variable("y", "Integer", IntValue(5)))
+    var y = new VariableDefinition(new Variable("y", TInt(), IntValue(5)))
     y.run()
 
     var ifAssignment = new Assignment("y", IntValue(7))

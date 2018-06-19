@@ -7,7 +7,7 @@ import org.scalatest.BeforeAndAfter
 import oberon.Environment._
 
 import oberon.command.{BlockCommand, CallableDeclaration, Return}
-import oberon.expression.{AddExpression}
+import oberon.expression.{AddExpression, TInt}
 
 class TestDeclareFunction extends FlatSpec with Matchers with GivenWhenThen with BeforeAndAfter {
 
@@ -27,7 +27,7 @@ class TestDeclareFunction extends FlatSpec with Matchers with GivenWhenThen with
     val retCommand = new Return(new AddExpression(undef, undef))
     val c = new BlockCommand(List(retCommand))
 
-    var function = new Function("soma", "Integer", List(("x", "Integer"), ("y", "Integer")), c)
+    var function = new Function("soma", TInt(), List(("x", TInt()), ("y", TInt())), c)
     val somaDeclaracao = new CallableDeclaration(function.id, function)
 
     somaDeclaracao.run()

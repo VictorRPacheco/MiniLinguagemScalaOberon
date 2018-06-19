@@ -6,8 +6,7 @@ import org.scalatest.GivenWhenThen
 import org.scalatest.BeforeAndAfter
 import oberon.Environment._
 import oberon.callable._
-import oberon.command.VariableDefinition
-import oberon.expression.{AddExpression, IntValue, VarRef}
+import oberon.expression.{AddExpression, BoolValue, IntValue, VarRef, TInt, TBool}
 
 class TestProcedureCall extends FlatSpec with Matchers with GivenWhenThen with BeforeAndAfter {
 
@@ -26,11 +25,11 @@ class TestProcedureCall extends FlatSpec with Matchers with GivenWhenThen with B
 
     val undef = oberon.expression.Undefined()
 
-    val zReturn = new Variable("z", "Integer", undef)
+    val zReturn = new Variable("z", TInt(), undef)
     val somaXY = new Assignment("z", new AddExpression(new VarRef("x"), new VarRef("y")))
     val cmds = new BlockCommand(List(somaXY))
 
-    var procedure = new Procedure("soma", "Integer", List(("x", "Integer"), ("y", "Integer")), cmds, zReturn)
+    var procedure = new Procedure("soma", TInt(), List(("x", TInt()), ("y", TInt())), cmds, zReturn)
     val somaDeclaracao = new CallableDeclaration(procedure.id, procedure)
 
     somaDeclaracao.run()
@@ -46,4 +45,32 @@ class TestProcedureCall extends FlatSpec with Matchers with GivenWhenThen with B
     }
 
   }
+
+  // procedure sumPlus5 (x, y: int, z: int) {
+  //    z = x + y
+  // }
+  // sumPlus5(true, false, z)
+  it should "intercept an exception when calling with wrong argumment types" in {
+    clear()
+    val undef = oberon.expression.Undefined()
+
+    val zReturn = new Variable("z", TInt(), undef)
+    val somaXY = new Assignment("z", new AddExpression(new VarRef("x"), new VarRef("y")))
+    val cmds = new BlockCommand(List(somaXY))
+
+    var procedure = new Procedure("soma", TInt(), List(("x", TInt()), ("y", TInt())), cmds, zReturn)
+    val somaDeclaracao = new CallableDeclaration(procedure.id, procedure)
+
+    somaDeclaracao.run()
+
+    val chamada = new ProcedureCall("soma" , List(BoolValue(true), BoolValue(false)), zReturn)
+
+    val thrown = intercept[Exception] {
+      chamada.run()
+    }
+
+    thrown.getMessage should be ("Invalid argument type")
+
+  }
+
 }
