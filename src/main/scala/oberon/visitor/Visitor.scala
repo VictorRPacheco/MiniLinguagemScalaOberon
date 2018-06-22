@@ -27,13 +27,18 @@ trait Visitor {
   def visit(e: FunctionExpression)  : Unit
   def visit(e: UnitExpression)  : Unit
 
-  def visit(e: Assignment)  : Unit
-  def visit(e: VariableDefinition)  : Unit
-  def visit(e: Return)  : Unit
-  def visit(e: While) : Unit
-  def visit(e: IfElse)  : Unit
-  def visit(e: IfThen)  : Unit
-  def visit(e: For) : Unit
-  def visit(e: Print) : Unit
+  def visit(c: Assignment)  : Unit
+  def visit(c: VariableDefinition)  : Unit
+  def visit(c: Return)  : Unit
+  def visit(c: While) : Unit
+  def visit(c: IfElse)  : Unit
+  def visit(c: IfThen)  : Unit
+  def visit(c: For) : Unit
+  def visit(c: Print) : Unit
+  def visit(c: BlockCommand) : Unit
+  def visit(c: ProcedureCall) : Unit
+  def visit(c: CallableDeclaration) : Unit
+  def visit(c: ReadInt) : Unit
+  def visit(c: ReadBool) : Unit
 
 }

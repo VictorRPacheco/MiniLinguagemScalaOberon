@@ -5,11 +5,11 @@ import oberon.expression._
 import oberon.callable._
 import oberon.expression.BoolValue
 import oberon.thread._
+import oberon.visitor.Visitable
+import oberon.visitor.Visitor
+import scala.collection.mutable.HashMap
 
-import scala.collection.mutable.{HashMap, Map, Stack}
-import scala.io.StdIn.{readBoolean, readInt}
-
-trait Command {
+trait Command extends Visitable {
   def run() : Unit
 }
 
@@ -17,6 +17,9 @@ class BlockCommand(val cmds: List[Command]) extends Command {
   override
   def run() : Unit = {
     cmds.foreach(c => c.run())
+  }
+  override def  accept(v: Visitor) : Unit = {
+    v.visit(this)
   }
 }
 
@@ -35,6 +38,9 @@ class Assignment(val id: String, val expression: Expression) extends Command {
       }
       case _ => { throw new RuntimeException("Trying to assign to a variable that wasn't declared")}
     }
+  }
+  override def  accept(v: Visitor) : Unit = {
+    v.visit(this)
   }
 }
 
@@ -59,6 +65,10 @@ class Return(val expression: Expression) extends Command {
     return v
   }
 
+  override def  accept(v: Visitor) : Unit = {
+    v.visit(this)
+  }
+
 }
 
 class IfElse(val cond: Expression, val ifCommand: Command, val elseCommand: Command) extends Command {
@@ -76,6 +86,9 @@ class IfElse(val cond: Expression, val ifCommand: Command, val elseCommand: Comm
       case BoolValue(true)  => { ifCommand.run(); }
       case BoolValue(false) => { elseCommand.run(); }
     }
+  }
+  override def  accept(v: Visitor) : Unit = {
+    v.visit(this)
   }
 }
 
@@ -95,6 +108,9 @@ class IfThen(val cond: Expression, val command: Command) extends Command {
       case _ => { }
     }
   }
+  override def  accept(v: Visitor) : Unit = {
+    v.visit(this)
+  }
 }
 
 
@@ -108,6 +124,9 @@ class For(val initCommand: Command, val cond: Expression, val lastCommand: Comma
       val newWhile = new While(cond, new BlockCommand(List(command, lastCommand)))
       newWhile.run()
 
+  }
+  override def  accept(v: Visitor) : Unit = {
+    v.visit(this)
   }
 
 }
@@ -128,6 +147,9 @@ class While(val cond: Expression, val command: Command) extends Command {
       case _               => { }
     }
   }
+  override def  accept(v: Visitor) : Unit = {
+    v.visit(this)
+  }
 }
 
 class Print(val expression: Expression) extends Command {
@@ -143,12 +165,18 @@ class Print(val expression: Expression) extends Command {
       print(f.get(expression))
     }
   }
+  override def  accept(v: Visitor) : Unit = {
+    v.visit(this)
+  }
 }
 
 class ReadInt() extends Command {
   override
   def run() : Unit = {
     //readInt()
+  }
+  override def  accept(v: Visitor) : Unit = {
+    v.visit(this)
   }
 }
 
@@ -157,6 +185,9 @@ class ReadBool() extends Command {
   def run() : Unit = {
     //readBoolean()
   }
+  override def  accept(v: Visitor) : Unit = {
+    v.visit(this)
+  }
 }
 
 class CallableDeclaration(id: String, val callable: Callable) extends Command {
@@ -164,12 +195,18 @@ class CallableDeclaration(id: String, val callable: Callable) extends Command {
   def run() : Unit = {
     mapCallable(id, callable)
   }
+  override def  accept(v: Visitor) : Unit = {
+    v.visit(this)
+  }
 }
 
 class VariableDefinition(val variable: Variable) extends Command {
   override
   def run() : Unit = {
     map(variable.id, variable)
+  }
+  override def  accept(v: Visitor) : Unit = {
+    v.visit(this)
   }
 }
 
@@ -229,5 +266,9 @@ class ProcedureCall(val id: String, val args: List[Expression], val ret: Variabl
     var newReturn = new VariableDefinition(newReturnVariable)
     newReturn.run()
 
+  }
+
+  override def  accept(v: Visitor) : Unit = {
+    v.visit(this)
   }
 }
