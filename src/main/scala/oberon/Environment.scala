@@ -52,7 +52,7 @@ object Environment {
   def mapCallable(id: String, callable: Callable) = {
     if (lookupCallable(id).isEmpty)
       progDeclarations += (id -> callable)
-    else throw new RuntimeException("Function already declared")
+    else throw new RuntimeException("Function/Procedure already declared")
   }
 
   // Look for a variable in the global variables stack or the local variables stack

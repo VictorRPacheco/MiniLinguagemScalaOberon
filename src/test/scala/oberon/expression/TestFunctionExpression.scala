@@ -7,8 +7,6 @@ import org.scalatest.BeforeAndAfter
 import oberon.Environment._
 import oberon.callable._
 import oberon.command._
-import java.lang.RuntimeException
-import oberon.expression.Value
 
 
 class TestFunctionExpression extends FlatSpec with Matchers with GivenWhenThen with BeforeAndAfter {
@@ -117,7 +115,7 @@ class TestFunctionExpression extends FlatSpec with Matchers with GivenWhenThen w
       dumbFactorialDeclaration.run()
     }
 
-    thrown.getMessage should be ("Function already declared")
+    thrown.getMessage should be ("Function/Procedure already declared")
   }
 
   // testing use of global variable instead of local variable
