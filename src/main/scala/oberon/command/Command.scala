@@ -48,7 +48,7 @@ class Return(val expression: Expression) extends Command {
   def run(): Unit = {
     // check type of return expression
     if (expression.typeCheck().equals(false)) {
-      throw new RuntimeException("Tipo da expressão no return falhou")
+      throw new RuntimeException("Type checking failed at return")
     }
 
     expression.eval()
@@ -77,7 +77,7 @@ class IfElse(val cond: Expression, val ifCommand: Command, val elseCommand: Comm
 
     // perform type checking on condition value
     if (cond.typeCheck().equals(false)) {
-      throw new RuntimeException("Tipo da condição falhou no IfElse")
+      throw new RuntimeException("Type checking failed at IfElse")
     }
 
     val v = cond.eval.asInstanceOf[BoolValue]
@@ -98,7 +98,7 @@ class IfThen(val cond: Expression, val command: Command) extends Command {
 
     // perform type checking on condition value
     if (cond.typeCheck().equals(false)) {
-      throw new RuntimeException("Tipo da condição falhou no IfThen")
+      throw new RuntimeException("Type checking failed at IfThen")
     }
 
     val v = cond.eval.asInstanceOf[BoolValue]
@@ -137,7 +137,7 @@ class While(val cond: Expression, val command: Command) extends Command {
 
     // perform type checking on condition value
     if (cond.typeCheck().equals(false)) {
-      throw new RuntimeException("Tipo da condição falhou no For")
+      throw new RuntimeException("Type checking failed at For")
     }
 
     val v = cond.eval.asInstanceOf[BoolValue]
@@ -157,7 +157,7 @@ class Print(val expression: Expression) extends Command {
   def run() : Unit = {
     // perform type checking on expression to be printed
     if (expression.typeCheck().equals(false)) {
-      throw new RuntimeException("Tipo da condição falhou no Print")
+      throw new RuntimeException("Type checking failed at Print")
     }
 
     expression.getClass.getDeclaredFields foreach { f =>

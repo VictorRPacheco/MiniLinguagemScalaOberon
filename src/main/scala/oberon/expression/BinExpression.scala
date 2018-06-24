@@ -77,6 +77,8 @@ class DivideExpression(lhs: Expression, rhs: Expression) extends BinExpression(l
     val v1 : IntValue = lhs.eval().asInstanceOf[IntValue]
     val v2 : IntValue = rhs.eval().asInstanceOf[IntValue]
 
+    if (v2.equals(IntValue(0))) throw new RuntimeException("0 Division is undefined")
+
     return IntValue(v1.value / v2.value)
   }
 
