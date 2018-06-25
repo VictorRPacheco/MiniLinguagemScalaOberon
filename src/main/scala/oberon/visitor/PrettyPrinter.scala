@@ -75,7 +75,7 @@ class PrettyPrinter extends Visitor {
 
   def visit(e: NotExpression) : Unit = {
     var v = e.uhs.accept(this)
-    str = "(!" + v + ")"
+    str = "(!" + e.uhs + ")"
   }
 
   def visit(e: UnitExpression) : Unit = { }
