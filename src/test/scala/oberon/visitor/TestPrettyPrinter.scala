@@ -1,7 +1,7 @@
 package oberon
 
 import oberon.callable._
-import oberon.command.{BlockCommand, CallableDeclaration, Return, VariableDefinition}
+import oberon.command._
 import org.scalatest.FlatSpec
 import org.scalatest.Matchers
 import org.scalatest.GivenWhenThen
@@ -148,8 +148,8 @@ class TestPrettyPrinter extends FlatSpec with Matchers with GivenWhenThen with B
 
 
   it should "print \"(!true)\" when we call accept in such an NotExpression" in {
-    val valTrue  = BoolValue(true)
-    val NotEx   = new NotExpression(valTrue)
+    val BoolTrue  = BoolValue(true)
+    val NotEx   = new NotExpression(BoolTrue)
 
     val pp = new PrettyPrinter()
 
@@ -157,32 +157,7 @@ class TestPrettyPrinter extends FlatSpec with Matchers with GivenWhenThen with B
     pp.str should be ("(!true)")
   }
 
-  it should "print \"(5 != 10)\" when we call accept in such an NotExpression" in {
-    val valTrue  = BoolValue(true)
-    val NotEx   = new NotExpression(valTrue)
-
-    val pp = new PrettyPrinter()
-
-    NotEx.accept(pp)
-    pp.str should be ("(!true)")
-  }
-
-  it should "print false when we call accept in such a value" in {
-    clear()
-    val boolValue = BoolValue(false)
-    val variableDefinition = new VariableDefinition(new Variable ("bol", TBool(), boolValue))
-    val pp = new PrettyPrinter()
-    boolValue.accept(pp)
-
-    pp.str should be("false")
-
-    val newPP = new PrettyPrinter()
-    variableDefinition.accept(newPP)
-    newPP.str should be ("Boolean bol = BoolValue(false)")
-
-  }
-
-  it should "print our function when we call accept in such a value" in {
+  it should "print our function when we call accept in such a FunctionExpression" in {
 
     val somaXY = new Return(new AddExpression(new VarRef("x"), new VarRef("y")))
     val cmds = new BlockCommand(List(somaXY))
@@ -197,5 +172,32 @@ class TestPrettyPrinter extends FlatSpec with Matchers with GivenWhenThen with B
     pp.str should be ("soma(2, 5)")
 
   }
+
+  it should "print false when we call accept in such a VariableDefinition" in {
+    clear()
+    val boolValue = BoolValue(false)
+    val variableDefinition = new VariableDefinition(new Variable ("bol", TBool(), boolValue))
+    val pp = new PrettyPrinter()
+    boolValue.accept(pp)
+
+    pp.str should be("false")
+
+    val newPP = new PrettyPrinter()
+    variableDefinition.accept(newPP)
+    newPP.str should be ("Boolean bol = BoolValue(false)")
+
+  }
+
+  it should "print false when we call accept in such an Assignment" in {
+    clear()
+    val x = new VariableDefinition(new Variable("x", TInt(), IntValue(5)))
+    val assignmentCom = new Assignment("x", IntValue(10))
+    val pp = new PrettyPrinter()
+
+    assignmentCom.accept(pp)
+    pp.str should be ("x <- IntValue(10)")
+
+  }
+
 
 }

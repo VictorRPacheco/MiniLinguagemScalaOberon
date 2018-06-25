@@ -78,10 +78,7 @@ class PrettyPrinter extends Visitor {
     str = "(!" + v + ")"
   }
 
-  def visit(e: UnitExpression) : Unit = {
-    var v = e.uhs.accept(this)
-    str = "(" + v + ")"
-  }
+  def visit(e: UnitExpression) : Unit = { }
 
   def visit(e: VarRef)        : Unit = { }
 
@@ -107,7 +104,7 @@ class PrettyPrinter extends Visitor {
   }
 
   def visit(c: Assignment)    : Unit = {
-    str = c.id + c.expression.accept(this)
+    str = c.id + " <- " + c.expression
   }
 
   def visit(c: While)         : Unit = {
@@ -162,6 +159,7 @@ class PrettyPrinter extends Visitor {
   }
 
   def visit(c: ReadInt) : Unit = { }
+
   def visit(c: ReadBool) : Unit = { }
 
   private def visitBinExp(e: BinExpression) : (String, String) = {
